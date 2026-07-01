@@ -15,6 +15,12 @@
       "nav": "新手上手经验",
       "title": "新手第一次用Claude中转站·从注册到跑通完整经验 | KingFlow",
       "desc": "非科班小白第一次用 Claude 中转站的完整经验：什么是中转站、从注册领 Key 到改 Base URL 跑通第一段 Python，Base URL 带不带 /v1、model 怎么填全讲清。"
+    },
+    {
+      "slug": "claude-proxy-save-money",
+      "nav": "中转省钱经验",
+      "title": "用Claude中转站怎么省钱·充值计费与省token经验 | KingFlow",
+      "desc": "Claude 中转站怎么省钱：讲清 token 计费、按模型分档（haiku/sonnet/opus）、用好 Prompt Cache 透传、控制上下文、先小额充值后台对账，实测省下一大截。"
     }
   ]
 }

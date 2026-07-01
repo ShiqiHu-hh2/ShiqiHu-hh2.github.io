@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>用Claude中转站怎么省钱·充值计费与省token经验 | KingFlow</title>
+<meta name="description" content="Claude 中转站怎么省钱：讲清 token 计费、按模型分档（haiku/sonnet/opus）、用好 Prompt Cache 透传、控制上下文、先小额充值后台对账，实测省下一大截。">
+<link rel="canonical" href="https://ShiqiHu-hh2.github.io/claude-proxy-save-money/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="用Claude中转站怎么省钱·充值计费与省token经验 | KingFlow">
+<meta property="og:description" content="Claude 中转站怎么省钱：讲清 token 计费、按模型分档（haiku/sonnet/opus）、用好 Prompt Cache 透传、控制上下文、先小额充值后台对账，实测省下一大截。">
+<meta property="og:url" content="https://ShiqiHu-hh2.github.io/claude-proxy-save-money/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-proxy-beginner/">新手上手经验</a>
+<a href="/claude-proxy-save-money/" class="active">中转省钱经验</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>用 Claude 中转站怎么省钱：充值、计费与省 token 实战经验</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+</div>
+
+<p>用 Claude 写代码、做长文本处理这半年，账单从一开始每天心惊肉跳，到后来稳稳压在一个可控的数字，我踩过的坑和攒下的省钱经验基本都在这篇里了。这不是教程贴，是一篇实打实的省钱经验帖——我自己用的中转站是 KingFlow（https://www.kingflow.ai），下面讲的方法在别的按 token 计费的中转站上思路也通用。</p>
+<h2>一、先搞懂中转站怎么计费，才知道钱花哪了</h2>
+<p>很多人用中转站扣着扣着钱就没了，却说不清扣在哪。搞清计费规则是省钱的第一步。</p>
+<p>中转站基本都是<strong>按 token 余额扣费</strong>，而且<strong>输入和输出是分开算的</strong>。大白话解释：</p>
+<ul>
+<li><strong>输入 token</strong>：你发给模型的东西——你的问题、贴进去的代码、system 提示词、之前的对话历史，全算输入。</li>
+<li><strong>输出 token</strong>：模型回给你的内容,它写的每一个字。</li>
+</ul>
+<p>这里有个反直觉但很关键的点：<strong>用 Claude 写代码时，输入 token 往往远远大于输出 token</strong>。你随手贴几个文件进去、带上一长串对话历史，输入可能是几万 token，模型回你几百字。所以省钱的重心，很多时候不在"让它少说话",而在"别让它读那么多"。</p>
+<p>中转站一般还有个<strong>倍率</strong>的概念，不同模型倍率不同——旗舰模型倍率高、小模型倍率低。正规站点后台能查到每一笔调用的 token 明细和扣费，KingFlow 后台就能看日志、余额、用量和调用明细，对账很方便。具体倍率数字我不写死，以你实际用的后台为准，注册进去一看便知。</p>
+<p>记住一句话：<strong>输入贵、输出也贵，而输入通常是大头。</strong> 下面三招省钱法，全是围绕这个事实展开的。</p>
+<h2>二、省钱第一招：模型分档,别拿旗舰跑杂活</h2>
+<p>这是见效最快、最不费脑的一招。中转站一个 Key 就能切多个模型，改一个 <code>model</code> 参数的事,别嫌麻烦。</p>
+<p>我的分档习惯是这样的：</p>
+<ul>
+<li><strong>claude-haiku-4-5</strong> 跑高频、简单、量大的活：批量改格式、提取字段、简单问答、给变量起名、写 commit message 这类。这种任务一天可能跑几百次，用旗舰纯属烧钱。</li>
+<li><strong>claude-sonnet-4-6</strong> 当日常主力：写常规业务代码、改 bug、看文档、日常对话，均衡够用，性价比最好。我 80% 的活都在这一档。</li>
+<li><strong>claude-opus-4-8</strong> 只在真难的任务上用：大重构、复杂架构设计、一堆文件牵一发动全身的改动、卡了很久别的模型搞不定的。用它就是买它的思考深度,别拿它干杂活。</li>
+</ul>
+<p>如果对成本特别敏感，中转站通常还能路由国产模型,像 deepseek-v4、glm-5.1、qwen3.6-plus、kimi-k2.1-128k 这些。翻译、总结、跑测试数据这种活,切个国产模型下去,成本又能压一截。KingFlow 一个 Key 就能覆盖这些模型,不用维护多套 Key。</p>
+<p><strong>心法：把"这个任务值得用多贵的脑子"当成一个下意识的判断。</strong> 养成习惯后,账单能省一大截。</p>
+<h2>三、省钱第二招：把 Prompt Cache 用起来,这是最容易被忽视的省钱大户</h2>
+<p>如果说分档是省钱的入门,那用好 Prompt Cache 就是进阶,而且效果往往比分档还猛。</p>
+<p><strong>Prompt Cache（提示词缓存）是什么？</strong> 简单说,你每次请求里那些<strong>重复不变的部分</strong>——一大段 system 提示词、贴进去的项目背景、固定的规则文档——如果每次都当全新输入重新计费,那太亏了。缓存机制就是把这些不变的部分"记住",第二次请求命中缓存时,这部分 token 的费用大幅降低。</p>
+<p>前面说过 Claude 写代码输入远大于输出,而输入里很大一块是<strong>每次都一样的上下文</strong>。把这块缓存住,省下的就是实打实的钱,幅度能省一大截(具体命中后省多少,以你后台的 usage 明细为准)。</p>
+<p>怎么用好它,有两个要点:</p>
+<ol>
+<li>
+<p><strong>在稳定不变的部分带上 <code>cache_control</code> 标记。</strong> 把 system 提示词、长文档背景这些放在请求前部并标记为可缓存,让中转站知道这块可以缓存复用。KingFlow 走的是官方 <code>/v1/messages</code> 协议,Prompt Cache 完整透传,连发两次,第二次看 <code>usage.cache_read_input_tokens</code> 非零就说明命中了。</p>
+</li>
+<li>
+<p><strong>别乱改 system,别破坏缓存命中。</strong> 缓存是按内容前缀匹配的,你哪怕在 system 里改一个字、调一下顺序,前缀一变,缓存就失效,又得按全价重算。所以<strong>把固定的规则、背景放在最前面且保持一字不动</strong>,把每次变化的东西(用户的具体问题)放后面。我之前吃过亏:图省事每次在 system 里塞个时间戳,结果缓存全废,白白多花钱。</p>
+</li>
+</ol>
+<p>验证方法很简单:同样的 system 连发两次请求,第二次去后台看 <code>cache_read</code> 相关字段是不是非零。非零,恭喜,省钱生效了。</p>
+<h2>四、省钱第三招：管好上下文长度,别把无用历史一直背着</h2>
+<p>这一招和第一招是一个道理的两面——既然输入是大头,那就少喂输入。</p>
+<p>最常见的浪费是<strong>对话历史无限累积</strong>。你和模型聊了三十轮,到第三十一轮还把前面三十轮全带上,而其实前面二十轮早就跟当前问题没关系了。这些无用历史每一轮都在当输入 token 重新计费,越滚越贵。</p>
+<p>我的几个习惯:</p>
+<ul>
+<li><strong>该开新会话就开新会话。</strong> 换了个不相关的任务,别在旧对话里接着聊,历史清零,输入立刻瘦身。</li>
+<li><strong>贴代码要精准。</strong> 只贴相关的那个函数、那几行,别整个文件甚至整个目录糊上去。模型不需要看那些无关代码,你也不需要为它们付费。</li>
+<li><strong>长文档处理拆分。</strong> 一次性塞十万字进去很爽,但每一轮都在为这十万字付输入费。能拆就拆,能提炼摘要再喂就提炼。</li>
+<li><strong>定期"总结压缩"。</strong> 长对话可以让模型先总结一下前情,然后开新会话只带这个摘要,把几万 token 的历史压成几百 token。</li>
+</ul>
+<p>这一招不需要任何配置,纯靠习惯,但省下来的钱一点不比前两招少。</p>
+<h2>五、充值策略：先小额测速,后台盯用量,子 Key 设额度防超支</h2>
+<p>省 token 是开源节流的"节流",充值策略则是把钱花在刀刃上、不被坑。我的做法是这套流程:</p>
+<p><strong>第一步:先小额充,测速再说。</strong> 别一上来就充一大笔。KingFlow 新人注册一般送额度,可以先拿送的额度或小额充值跑几天,看看这几件事:延迟稳不稳(国内直连的话首字通常一两秒就出来了)、高峰会不会限速、模型有没有掉包降级。确认靠谱了再加充。这条铁律能帮你避开"充完钱发现不好用又退不了"的坑。</p>
+<p><strong>第二步:养成后台对账习惯。</strong> 每隔几天去后台看一眼用量和调用明细,哪个模型花得最多、哪天突然暴涨,一目了然。倍率透明、能对账的站点才敢长期用。发现某个脚本在疯狂烧 token,早发现早止损。</p>
+<p><strong>第三步:给子 Key 设额度上限。</strong> 这条对团队和跑自动化脚本的人尤其重要。给每个项目、每个成员、每个自动化任务分独立的子 Key,并设好额度上限。这样万一某个脚本写了死循环、某个 Key 泄露了,损失也被额度封顶兜住,不会一夜之间把余额掏空。后台按 Key 看用量,顺便还把成本按项目拆清楚了。</p>
+<p><strong>第四步:小额多次,别囤太多。</strong> 按用量节奏小额多次充,既不会因为余额太多睡不着,现金流也更灵活。</p>
+<h2>六、FAQ（省钱向）</h2>
+<p><strong>Q1：中转站真比官方直连省钱吗？</strong>
+省不省要分两头看。纯 API 单价上,中转站因为倍率和渠道,很多时候是有优势的;更重要的是省下的<strong>隐性成本</strong>——你不用折腾美区信用卡、不用挂代理、不用担心账号风控封号退费。加上人民币小额充值、能开票对账,综合算下来对国内用户是省心又省钱的。具体单价对比以你后台实际扣费为准。</p>
+<p><strong>Q2：省 token 的这些招,哪个性价比最高?</strong>
+如果你是写代码高频用户,<strong>Prompt Cache</strong> 通常是回报最大的一招,因为你的输入里重复上下文占比高,缓存命中后能省一大截。其次是<strong>模型分档</strong>,几乎零成本、立竿见影。上下文管理是习惯活,长期收益也很可观。三招一起上效果最好。</p>
+<p><strong>Q3：切小模型会不会活干不好,反而返工更费钱?</strong>
+关键在"任务分档要准"。简单重复的活交给 claude-haiku-4-5 完全够用,不会返工;真正需要思考的难任务别硬省,老老实实上 claude-opus-4-8,一次做对比反复折腾省得多。省钱不是无脑用最便宜的,是"让每个任务用刚好够用的模型"。</p>
+<p><strong>Q4：怎么知道我的缓存到底有没有生效、省了多少?</strong>
+最直接的办法是看后台的 usage 明细。同样的 system 连发两次,第二次去看 <code>cache_read_input_tokens</code> 这类字段是不是非零、有没有走缓存计费。KingFlow 后台的调用明细能查到 token 用量和扣费构成,对着看几笔就心里有数了,省了多少一律以后台数据为准。</p>
+<hr />
+<p>省钱说到底就三件事:<strong>用对模型、缓存复用、少喂废话</strong>,再配上稳健的充值和对账习惯。这套方法我用 KingFlow（https://www.kingflow.ai）跑下来,账单从失控到可控,希望对你也管用。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>
