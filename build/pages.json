@@ -21,6 +21,12 @@
       "nav": "中转省钱经验",
       "title": "用Claude中转站怎么省钱·充值计费与省token经验 | KingFlow",
       "desc": "Claude 中转站怎么省钱：讲清 token 计费、按模型分档（haiku/sonnet/opus）、用好 Prompt Cache 透传、控制上下文、先小额充值后台对账，实测省下一大截。"
+    },
+    {
+      "slug": "claude-proxy-vs-official",
+      "nav": "中转vs官方vs自建",
+      "title": "Claude中转站vs官方API vs自建代理·怎么选的经验 | KingFlow",
+      "desc": "官方直连、自建 One API 代理、用中转站三条路怎么选？一张七维对比表讲清门槛、成本、稳定性、封号风险、运维、发票，诚实说明各自适用场景。"
     }
   ]
 }
