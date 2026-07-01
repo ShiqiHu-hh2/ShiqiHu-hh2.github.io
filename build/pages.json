@@ -33,6 +33,12 @@
       "nav": "中转站问答大全",
       "title": "Claude中转站常见问题答疑·新手最关心的15个疑问 | KingFlow",
       "desc": "Claude 中转站合法吗、会不会封号、要不要梯子、怎么计费、能开发票吗、会不会掉包、Base URL 带不带 /v1……新手最关心的 15 个问题一次讲清。"
+    },
+    {
+      "slug": "claude-proxy-hands-on",
+      "nav": "重度使用体验",
+      "title": "Claude中转站重度使用一个月·真实体验与推荐 | KingFlow",
+      "desc": "Claude Code 跑代码+客户端聊天+脚本批处理重度用一个月的真实体验：接入一步到位、稳定性体感、Prompt Cache 省钱、模型没掉包，附诚实优缺点清单。"
     }
   ]
 }
