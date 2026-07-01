@@ -4,8 +4,17 @@
   "kf": "https://www.kingflow.ai",
   "google_site_verification": "",
   "pages": [
-    { "slug": "", "nav": "首页",
+    {
+      "slug": "",
+      "nav": "首页",
       "title": "KingFlow｜国内 Claude / GPT API 加速中转平台",
-      "desc": "KingFlow 国内直连、低延迟的 AI API 中转，支持 Claude Code、OpenAI Codex 与 GPT/Claude/Gemini 多模型，一行配置即用。接入指南与配置教程合集。" }
+      "desc": "KingFlow 国内直连、低延迟的 AI API 中转，支持 Claude Code、OpenAI Codex 与 GPT/Claude/Gemini 多模型，一行配置即用。接入指南与配置教程合集。"
+    },
+    {
+      "slug": "claude-proxy-beginner",
+      "nav": "新手上手经验",
+      "title": "新手第一次用Claude中转站·从注册到跑通完整经验 | KingFlow",
+      "desc": "非科班小白第一次用 Claude 中转站的完整经验：什么是中转站、从注册领 Key 到改 Base URL 跑通第一段 Python，Base URL 带不带 /v1、model 怎么填全讲清。"
+    }
   ]
 }
